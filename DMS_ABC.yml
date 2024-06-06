@@ -1,0 +1,12 @@
+name: DMS_ABC
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - matplotlib=3.8.4
+  - numpy=1.26.4
+  - pandas=2.2.2
+  - pysam=0.22.1
+  - python=3.10.14
+  - tk=8.6.13
