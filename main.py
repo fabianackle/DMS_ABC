@@ -7,6 +7,6 @@ import gui
 """
 Entry point for GUI
 """
-root=gui.DMS()
+root = gui.DMS()
 
 root.mainloop()
