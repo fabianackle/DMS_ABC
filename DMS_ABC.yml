@@ -10,4 +10,3 @@ dependencies:
   - pysam=0.22.1
   - python=3.10.14
   - samtools=1.20
-  - tk=8.6.13
