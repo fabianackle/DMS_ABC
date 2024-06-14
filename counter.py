@@ -209,21 +209,21 @@ def pileup_counter(bam_file, starts, quality_filter, reference_name, reference_s
     return pileup_dict
 
 
-def create_triplett_count(samfile, quality_filter, positions, reference_seq):
+def create_triplett_count(samfile, quality_filter, positions, reference_name, reference_seq):
     count_dict = {}
     for starts in positions:
-        count_dict[int(starts)] = pileup_counter(samfile, int(starts), quality_filter, reference_seq)
+        count_dict[int(starts)] = pileup_counter(samfile, int(starts), quality_filter, reference_name, reference_seq)
         print(f"processed position {starts}")
 
     return count_dict
 
 
 # def count_mutants(data_dict, curent_file):
-def count_mutants(input_file, output_file, positions, reference_seq):
+def count_mutants(input_file, output_file, positions, reference_name, reference_seq):
     print(positions)
     samfile = pysam.AlignmentFile(input_file, 'rb')
     output_txt = open(output_file, 'w')
-    count_dict = create_triplett_count(samfile, 30, positions, reference_seq)
+    count_dict = create_triplett_count(samfile, 30, positions, reference_name, reference_seq)
 
     output_txt.write('position' + '\t')
     keylist = list(count_dict.keys())
