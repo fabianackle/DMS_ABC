@@ -7,24 +7,20 @@ import mate_generator
 import mate_sequence_trimmer
 
 
-def codon_truncation(data_dict, curent_file):
+# def codon_truncation(data_dict, curent_file):
+def codon_truncation(input_file, output_file, frameshift_position, frameshift_offset):
     """
     sequence trimmer function
     trims all sequences in curent file to codons_starts.
     """
 
-    input_file_path = data_dict['inputdir'] + '/' + curent_file
-    output_directory = data_dict['outputdir'] + '/' + curent_file[:-4] + '_codontruncated.bam'
-    freameshift_position = data_dict['frameshift_position']
-    frameshift_offset = data_dict['frameshift_offset']
+    # indexing input_file
+    os.system('samtools index --bai ' + input_file)
 
-    # indexing inputfile
-
-    os.system('samtools index ' + input_file_path.replace(' ', '\ ') + ' >' + input_file_path.replace(' ', '\ ') + '.bai')
     # open file for reading and new file for writing
 
-    samfile = pysam.AlignmentFile(input_file_path, 'rb')
-    samfile_trimmed = pysam.AlignmentFile(output_directory, 'wb', template=samfile)
+    samfile = pysam.AlignmentFile(input_file, 'rb')
+    samfile_trimmed = pysam.AlignmentFile(output_file, 'wb', template=samfile)
 
     unmapped_read_count = 0
     softclip_count = 0
@@ -41,7 +37,7 @@ def codon_truncation(data_dict, curent_file):
         elif 'H' in read1.cigarstring or 'H' in read2.cigarstring:
             hardclip_count = hardclip_count + 1
         else:
-            trimmed_read1, trimmed_read2 = mate_sequence_trimmer.trim(read1, read2, freameshift_position, frameshift_offset)
+            trimmed_read1, trimmed_read2 = mate_sequence_trimmer.trim(read1, read2, frameshift_position, frameshift_offset)
 
             if trimmed_read1 == None or trimmed_read2 == None:
                 short_overlap_or_non = short_overlap_or_non + 1
@@ -55,6 +51,6 @@ def codon_truncation(data_dict, curent_file):
     samfile_trimmed.close()
 
     # indexing output file
-    os.system('samtools index ' + output_directory.replace(' ', '\ ') + ' >' + output_directory.replace(' ', '\ ') + '.bai')
+    os.system('samtools index --bai ' + output_file)
 
-    print(str(unmapped_read_count) + 'unmapped reads, ' + str(hardclip_count) + ' hardclipped reads and ' + str(short_overlap_or_non) + ' short overlap reads were removed')
+    print(f"{unmapped_read_count} unmapped reads, {hardclip_count} hardclipped reads and {short_overlap_or_non} short overlap reads were removed.")
