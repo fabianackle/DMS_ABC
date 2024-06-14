@@ -4,7 +4,6 @@ Creates settings json file for the DMS_ABC script.
 """
 import argparse
 import json
-import os
 
 
 def save_settings(filepath, settings):
@@ -33,8 +32,6 @@ def main():
     parser.add_argument("--frameshift_position", default=0, type=int)
     parser.add_argument("--frameshift_offset", default=0, type=int)
     args = parser.parse_args()
-
-    settings = dict()
 
     settings = {
         'data_files': [args.data_files],
