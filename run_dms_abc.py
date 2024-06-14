@@ -4,6 +4,8 @@ import argparse
 import json
 import os
 
+import dnaio
+
 import codon_truncation_bam_overlap
 import counter
 import create_count_file
@@ -13,6 +15,18 @@ def get_readingframes(reference_sequence, frameshift_position, frameshift_offset
     """Returns the two reading frames"""
     frame1 = reference_sequence[:frameshift_position]
     frame2 = reference_sequence[frameshift_position - frameshift_offset:]
+    return frame1, frame2
+
+
+def read_refrence(fasta_file):
+    """Returns the name and the sequence of a fasta file"""
+    with dnaio.open(fasta_file) as file:
+        for record in file:
+            name = record.name
+            sequence = record.sequence
+            break
+    return name, sequence
+
     return frame1, frame2
 
 
