@@ -24,7 +24,7 @@ def DMS_processing(data_dict):
     reference_sequence = data_dict["reference_sequence"]
     counter.count_mutants(codontruncated_file, triplet_count_file, positions, reference_sequence)
 
-    # create_count_file.make_HDF5(data_dict, i)
+    create_count_file.make_HDF5(triplet_count_file, reference_sequence, frameshift_position, frameshift_offset)
 
 
 def main():
