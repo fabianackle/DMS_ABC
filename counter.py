@@ -73,10 +73,10 @@ AA_CODES = {
 # store dicts of counts for each positions in a dict with position as key and dict as value
 
 
-def pileup_counter(bam_file, starts, quality_filter, reference_seq):
+def pileup_counter(bam_file, starts, quality_filter, reference_name, reference_seq):
 
     pileup_dict = copy.copy(COUNT_TABLE)
-    for read1, read2 in mate_generator.read_pair_generator(bam_file, start=starts, end=starts + 1):
+    for read1, read2 in mate_generator.read_pair_generator(bam_file, reference_name, start=starts, end=starts + 1):
         if not 'I' in read1.cigarstring and read2.cigarstring and not 'D' in read1.cigarstring and read2.cigarstring:
             triplett1 = read1.query_sequence[starts - read1.reference_start:starts - read1.reference_start + 3]
             triplett2 = read2.query_sequence[starts - read2.reference_start:starts - read2.reference_start + 3]

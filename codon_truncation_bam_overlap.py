@@ -8,7 +8,7 @@ import mate_sequence_trimmer
 
 
 # def codon_truncation(data_dict, curent_file):
-def codon_truncation(input_file, output_file, frameshift_position, frameshift_offset):
+def codon_truncation(input_file, output_file, frameshift_position, frameshift_offset, reference_name):
     """
     sequence trimmer function
     trims all sequences in curent file to codons_starts.
@@ -28,7 +28,7 @@ def codon_truncation(input_file, output_file, frameshift_position, frameshift_of
     short_overlap_or_non = 0
 
     # iterate over all read pairs
-    for read1, read2 in mate_generator.read_pair_generator(samfile, start=None, end=None):
+    for read1, read2 in mate_generator.read_pair_generator(samfile, reference_name, start=None, end=None):
 
         # remove all unmapped reads
         if read1.flag == 4 or read2.flag == 4 or read1.cigarstring == None or read2.cigarstring == None:

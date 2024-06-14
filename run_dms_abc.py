@@ -24,12 +24,13 @@ def DMS_processing(data_dict):
     codontruncated_file = "331281_01-UDI001_eth7_rep1_Lib49_50_S30_adaptor_removed_trimmed.raw_subsampled_codontruncated.bam"
     frameshift_position = data_dict["frameshift_position"]
     frameshift_offset = data_dict["frameshift_offset"]
-    codon_truncation_bam_overlap.codon_truncation(input_file, codontruncated_file, frameshift_position, frameshift_offset)
+    reference_name = "EfrEF_opt_wt_sequence"
+    codon_truncation_bam_overlap.codon_truncation(input_file, codontruncated_file, frameshift_position, frameshift_offset, reference_name)
 
     triplet_count_file = "triplet_count.txt"
     positions = data_dict["position_list"]
     reference_sequence = data_dict["reference_sequence"]
-    counter.count_mutants(codontruncated_file, triplet_count_file, positions, reference_sequence)
+    counter.count_mutants(codontruncated_file, triplet_count_file, positions, reference_name, reference_sequence)
 
     create_count_file.make_HDF5(triplet_count_file, reference_sequence, frameshift_position, frameshift_offset)
 

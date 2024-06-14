@@ -12,13 +12,13 @@ from collections import defaultdict
 import pysam
 
 
-def read_pair_generator(bam, start, end):
+def read_pair_generator(bam, reference_name, start, end):
     """
     Find reads, store them in dict and return them once a pair is found.
     """
     read_dict = defaultdict(lambda: [None, None])
     # The reference parameter must match the header name of the sequence used for alignment.
-    for read in bam.fetch(reference='EfrEF_opt_wt_sequence', start=start, end=end):
+    for read in bam.fetch(reference=reference_name, start=start, end=end):
         if not read.is_proper_pair or read.is_secondary or read.is_supplementary:
             continue
         qname = read.query_name
