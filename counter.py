@@ -213,19 +213,16 @@ def create_triplett_count(samfile, quality_filter, positions, reference_seq):
     count_dict = {}
     for starts in positions:
         count_dict[int(starts)] = pileup_counter(samfile, int(starts), quality_filter, reference_seq)
-        print('processed position' + str(starts))
+        print(f"processed position {starts}")
 
     return count_dict
 
 
-def count_mutants(data_dict, curent_file):
-    input_file_directory = data_dict['outputdir'] + '/' + curent_file[:-4] + '_codontruncated.bam'
-    output_file_directory = input_file_directory + 'triplet_count.txt'
-    positions = data_dict['position_list']
-    reference_seq = data_dict['reference_sequence']
+# def count_mutants(data_dict, curent_file):
+def count_mutants(input_file, output_file, positions, reference_seq):
     print(positions)
-    samfile = pysam.AlignmentFile(input_file_directory, 'rb')
-    output_txt = open(output_file_directory, 'w')
+    samfile = pysam.AlignmentFile(input_file, 'rb')
+    output_txt = open(output_file, 'w')
     count_dict = create_triplett_count(samfile, 30, positions, reference_seq)
 
     output_txt.write('position' + '\t')
