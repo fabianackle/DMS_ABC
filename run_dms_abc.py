@@ -11,7 +11,19 @@ import counter
 import create_count_file
 
 
-def get_readingframes(reference_sequence, frameshift_position, frameshift_offset):
+def parse_arguments():
+    """Parse the command line arguments"""
+    parser = argparse.ArgumentParser(description="Settings for DMS_ABC script.")
+    parser.add_argument("--bam")
+    parser.add_argument("--reference")  # reference fasta file
+    parser.add_argument("--positions", nargs='+', type=int)  # list codons to be analyzed
+    parser.add_argument("--readingframes", action='store_true')  # bool multiple reading frames
+    parser.add_argument("--frameshift_position", default=0, type=int)
+    parser.add_argument("--frameshift_offset", default=0, type=int)
+    return parser.parse_args()
+
+
+def get_reading_frames(reference_sequence, frameshift_position, frameshift_offset):
     """Returns the two reading frames"""
     frame1 = reference_sequence[:frameshift_position]
     frame2 = reference_sequence[frameshift_position - frameshift_offset:]
@@ -29,20 +41,16 @@ def read_refrence(fasta_file):
 
 
 def DMS_processing(parameters):
-    """
-    Analyses bam_file
-    """
-    input_file = parameters["bam_file"]
+    """Running the DMS_ABC scripts"""
+    input_file = parameters["bam"]
     codontruncated_file = input_file[:-4] + "_codontruncated.bam"
-    triplet_count_file = input_file[:-4] + "triplet_count.txt"
+    triplet_count_file = input_file[:-4] + "_triplet_count.txt"
 
     frameshift_position = parameters["frameshift_position"]
     frameshift_offset = parameters["frameshift_offset"]
-
     reference_name = parameters["reference_name"]
     reference_sequence = parameters["reference_sequence"]
-
-    positions = parameters["position_list"]
+    positions = parameters["positions"]
 
     codon_truncation_bam_overlap.codon_truncation(input_file, codontruncated_file, frameshift_position, frameshift_offset, reference_name)
 
@@ -52,31 +60,22 @@ def DMS_processing(parameters):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Settings for DMS_ABC script.")
-    parser.add_argument("--bam")
-    parser.add_argument("--reference")  # reference fasta file
-    parser.add_argument("--positions", nargs='+', type=int)  # list codons to be analyzed
-    parser.add_argument("--readingframes", action='store_true')  # bool multiple reading frames
-    parser.add_argument("--frameshift_position", default=0, type=int)
-    parser.add_argument("--frameshift_offset", default=0, type=int)
-    args = parser.parse_args()
+    args = parse_arguments()
 
     reference_name, reference_sequence = read_refrence(args.reference)
 
     parameters = {
-        'bam_file': args.bam,
+        'bam': args.bam,
         'reference_name': reference_name,
         'reference_sequence': reference_sequence,
-        'position_list': args.positions,
+        'positions': args.positions,
         'readingframes': args.readingframes,
+        'frameshift_position': args.frameshift_position,
+        'frameshift_offset': args.frameshift_offset
     }
 
-    if bool(args.readingframes) == True:
-        position = int(args.frameshift_position)
-        offset = int(args.frameshift_offset)
-        frame1, frame2 = get_readingframes(reference_sequence, position, offset)
-        parameters['frameshift_position'] = position
-        parameters['frameshift_offset'] = offset
+    if args.readingframes:
+        frame1, frame2 = get_reading_frames(reference_sequence, args.frameshift_position, args.frameshift_offset)
         parameters['frame1'] = frame1
         parameters['frame2'] = frame2
 
